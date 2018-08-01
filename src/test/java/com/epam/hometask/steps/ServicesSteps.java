@@ -12,23 +12,23 @@ import java.util.stream.Collectors;
 import static com.epam.hometask.CommonBase.*;
 
 public class ServicesSteps {
-    public static void checkLambdaInvocation(String uploadedFileName) {
+    public static boolean isLambdaInvoked(String uploadedFileName) {
         long startTime = System.nanoTime();
         List<String> lambdaInvocationList = new ArrayList<>();
         while(lambdaInvocationList.isEmpty()) {
             FilterLogEventsResult filterLogEventsResult = awsLogs.filterLogEvents(
                     new FilterLogEventsRequest()
-                            .withLogGroupName("/aws/lambda/" + lambdaName)
-                            .withFilterPattern("Lambda executed successfully"));
+                            .withLogGroupName("/aws/lambda/" + lambdaName));
             List<FilteredLogEvent> events = filterLogEventsResult.getEvents();
             lambdaInvocationList = events.stream().map(FilteredLogEvent::toString).filter(i -> i.contains(uploadedFileName))
                     .collect(Collectors.toList());
 
             // wait for cloudwath log appers, otherwise exit on timeout
             if (TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime) > timeout) {
-                break;
+                return false;
             }
         }
 
+        return true;
     }
 }

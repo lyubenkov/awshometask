@@ -11,8 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Iterator;
 import java.util.UUID;
 
-import static com.epam.hometask.steps.ServicesSteps.checkLambdaInvocation;
+import static com.epam.hometask.steps.ServicesSteps.isLambdaInvoked;
 import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServicesTests extends CommonBase {
 
@@ -42,7 +43,7 @@ public class ServicesTests extends CommonBase {
     @ValueSource(strings = {"test100k.db"})
     public void lambdaShouldBeTriggeredAfterFileIsUploaded(String fileName) throws InterruptedException {
         transferManager.upload(bucketName, uploadedFileName, Utils.getFileFromResources(fileName)).waitForCompletion();
-        checkLambdaInvocation(uploadedFileName);
+        assertTrue(isLambdaInvoked(uploadedFileName), "Can't find lambda invocation in log");
     }
 
     @DisplayName("Lambda should be triggered after file is uploaded and deleted")
@@ -51,6 +52,6 @@ public class ServicesTests extends CommonBase {
     public void lambdaShouldBeTriggeredAfterFileIsUploadedAndDeleted(String fileName) throws InterruptedException {
         transferManager.upload(bucketName, uploadedFileName, Utils.getFileFromResources(fileName)).waitForCompletion();
         s3Client.deleteObject(bucketName, uploadedFileName);
-        checkLambdaInvocation(uploadedFileName);
+        assertTrue(isLambdaInvoked(uploadedFileName), "Can't find lambda invocation in log");
     }
 }
