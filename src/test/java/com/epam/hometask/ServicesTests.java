@@ -27,7 +27,7 @@ public class ServicesTests extends CommonBase {
             while (objIter.hasNext()) {
                 String objectKey = objIter.next().getKey();
                 s3Client.deleteObject(bucketName, objectKey);
-                log.debug(format("Cleanup: removing {0} key.", objectKey));
+                log.info(format("Cleanup: removing {0} key.", objectKey));
             }
 
             if (objectListing.isTruncated()) {

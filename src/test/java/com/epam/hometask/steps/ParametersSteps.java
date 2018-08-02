@@ -15,6 +15,8 @@ import java.util.UUID;
 
 import static com.epam.hometask.CommonBase.dynamodb;
 import static com.epam.hometask.CommonBase.dynamodbTableName;
+import static com.epam.hometask.CommonBase.log;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ParametersSteps {
@@ -29,7 +31,7 @@ public class ParametersSteps {
             table.putItem(item);
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
+            log.info(e.getMessage());
             fail("Create items failed");
         }
     }
@@ -43,13 +45,12 @@ public class ParametersSteps {
                             "originTimeStamp", 20140812);
             Item item = table.getItem(spec);
 
-            System.out.println("Printing item after retrieving it....");
-            System.out.println(item.toJSONPretty());
-
+            log.info("Printing item after retrieving it....");
+            log.info(item.toJSONPretty());
         }
         catch (Exception e) {
+            log.info(e.getMessage());
             fail("GetItem failed.");
-            System.err.println(e.getMessage());
         }
 
     }
@@ -67,13 +68,12 @@ public class ParametersSteps {
 
             DeleteItemOutcome outcome = table.deleteItem(deleteItemSpec);
 
-            System.out.println("Printing item that was deleted...");
-            System.out.println(outcome.getItem().toJSONPretty());
-
+            log.info("Printing item that was deleted...");
+            log.info(outcome.getItem().toJSONPretty());
         }
         catch (Exception e) {
+            log.info(e.getMessage());
             fail("Error deleting item in " + dynamodbTableName);
-            System.err.println(e.getMessage());
         }
     }
 
